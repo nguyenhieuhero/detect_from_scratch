@@ -1,9 +1,9 @@
 import cv2
 import numpy as np
-from utils import maximizeContrast,white_ratio,draw
+from utils import maximizeContrast,white_ratio,draw,toNorm,pred_num
 cap=cv2.VideoCapture("detect_from_scratch/video/test_3.mp4")
 while(True):
-    frame = cv2.imread("detect_from_scratch/image/1.jpg")
+    frame = cv2.imread("detect_from_scratch/image/5.jpg")
     # _,frame=cap.read()
     hsv=cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
     h,s,v=cv2.split(hsv)
@@ -46,7 +46,7 @@ while(True):
         tr=new[np.argmin(new[:,1])]
         bl=new[np.argmax(new[:,1])]
         # print(tl,tr,bl,br)
-        frame = cv2.circle(frame,tuple(tl), radius=0, color=(255, 0, 255), thickness=20)
+        # frame = cv2.circle(frame,tuple(tl), radius=0, color=(255, 0, 255), thickness=20)
         # print(tl,tr,bl)
         # print(np.sum(np.square(tl-tr)))
         # print(np.sum(np.square(tl-bl)))
@@ -83,6 +83,7 @@ while(True):
                 # print(len(infor))
                 if(len(infor)>0):
                     frame=draw(frame,tl,tr,bl,br)
+                    name_plate=''
                     upper=[]
                     lower=[]
                     for loc in infor:
@@ -94,8 +95,10 @@ while(True):
                     lower.sort(key=lambda row: row[0])
                     sort=upper+lower
                     for x,y,w,h in sort:
-                        crop=out[y:y+h,x:x+w]
-                        cv2.imshow(f"Plate: {label_index} {x,y,w,h}",crop)
+                        norm_output=toNorm(out[y:y+h,x:x+w])
+                        name_plate+=pred_num(norm_output)
+                        cv2.imshow(f"Plate: {pred_num(norm_output)} {x,y,w,h}",norm_output)
+                    frame=cv2.putText(frame,name_plate,tl,cv2.FONT_HERSHEY_SIMPLEX,3,(0,0,255),2)
     cv2.imshow("original",cv2.resize(frame,(700,400)))
     # cv2.waitKey(0)
     if cv2.waitKey(1) & 0xFF == 27:

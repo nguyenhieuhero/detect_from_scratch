@@ -7,7 +7,7 @@ from sklearn.preprocessing import OneHotEncoder
 label=np.array(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C','D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'P', 'Q','R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'])
 encoder=OneHotEncoder()
 encoder.fit(label.reshape(-1,1))
-model=load_model('detect_from_scratch/model.h5')
+model=load_model('detect_from_scratch\model (1).h5')
 lower = np.array([0, 0, 70])
 upper = np.array([179, 255, 255])
 
@@ -44,7 +44,7 @@ def toNorm(img,w=75,h=100):
     rs=100/img.shape[0]
     resize=cv2.resize(img,(int(img.shape[1]*rs),int(img.shape[0]*rs)))
     x_to_put=int((75-resize.shape[1])/2)
-    constant= cv2.copyMakeBorder(resize,5,5,x_to_put,x_to_put,cv2.BORDER_CONSTANT)
+    constant= cv2.copyMakeBorder(resize,0,0,x_to_put,x_to_put,cv2.BORDER_CONSTANT)
     return cv2.resize(constant,(75,100))
 def pred_num(gray_num_img):
     pred=model.predict(np.array([gray_num_img/255]))

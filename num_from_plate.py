@@ -1,11 +1,13 @@
 import cv2
-import numpy as np
-
-image=cv2.imread("detect_from_scratch\plate_detected\plate1.jpg")
+from utils import toNorm
+image=cv2.imread("detect_from_scratch/JPEGImages/1xemay327.jpg")
 bit=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
-bit=np.bitwise_not(bit)
-cv2.imshow(f"white {bit.shape}",bit)
-numLabels, labels, stats, centroids = cv2.connectedComponentsWithStats(bit,connectivity=4)
+_,thresh = cv2.threshold(bit,127,255,cv2.THRESH_BINARY_INV)
+img=cv2.resize(thresh,(400,300))
+infor=[]
+# bit=np.bitwise_not(bit)
+cv2.imshow(f"white {img.shape}",img)
+numLabels, labels, stats, centroids = cv2.connectedComponentsWithStats(img,connectivity=4)
 for i in range(0, numLabels):
     x = stats[i, cv2.CC_STAT_LEFT]
     y = stats[i, cv2.CC_STAT_TOP]
@@ -13,10 +15,9 @@ for i in range(0, numLabels):
     h = stats[i, cv2.CC_STAT_HEIGHT]
     area = stats[i, cv2.CC_STAT_AREA]
     (cX, cY) = centroids[i]
-    if(area>1000 and area<7000):
-        cv2.imshow(f"{int(w),int(h)}",bit[y:y+h,x:x+w])
-        # image = cv2.circle(image,(cX, cY), radius=0, color=(255, 0, 255), thickness=20)
-
+    if(w in range(20,110) and h in range(75,170)):
+        crop=img[y:y+h,x:x+w]
+        infor.append([x,y,w,h])
+        cv2.imshow(f"{int(w),int(h)}",toNorm(crop))
+        cv2.imwrite(f"detect_from_scratch/num_data/{x*y*w*h}.jpg",toNorm(crop))
 cv2.waitKey(0)
-
-cv2.destroyAllWindows()

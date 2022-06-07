@@ -91,8 +91,8 @@ for coord in coordinate:
                 h = stats[i, cv2.CC_STAT_HEIGHT]
                 area = stats[i, cv2.CC_STAT_AREA]
                 (cX, cY) = centroids[i]
-                # Lấy tọa độ hình có chiều ngang nằm trong khoảng 20-100 và chiều cao từ 75-170 => Dữ liệu chứa số trong biển
-                if(w in range(20,110) and h in range(75,170)):
+                # Lấy tọa độ hình có chiều ngang nằm trong khoảng 10-110 và chiều cao từ 75-170 => Dữ liệu chứa số trong biển
+                if(w in range(10,110) and h in range(75,170)):
                     infor.append([x,y,w,h])
             # Nếu trong biển có số thì tiến hành sắp xếp và nhận dạng
             if(len(infor)>0):
